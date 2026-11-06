@@ -27,12 +27,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     let res_vec = load_ratings("data/ml-latest-small/ratings.csv")?;
     let mut users:HashSet<u32> = HashSet::new();
     let mut movies:HashSet<u32> = HashSet::new();
+    let mut counts = [0usize;11];
 
     for i in &res_vec{
         users.insert(i.user_id);
         movies.insert(i.movie_id);
+        let index = (i.rating * 2.0) as usize;
+        counts[index] +=1;
     }
     let fullness = (res_vec.len() as f64) / ((users.len() as f64) * (movies.len() as f64));
     println!("Пользователи: {}, Фильмы: {}, Заполненность матрицы: {:.2} %", users.len(), movies.len(), fullness * 100.0);
+    for i in 1..=10{
+        println!("Оценка :{}, Количество оценок: {}",i as f32 / 2.0, counts[i]);
+    }
     Ok(())
 }
